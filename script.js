@@ -26,6 +26,7 @@ function loadVocabulary() {
         .then(response => response.text())
         .then(data => {
             words = parseCSV(data);
+            console.log('Parsed Words:', words); // Debugging log
             if (words.length > 0) {
                 displayNextWord();
             } else {
@@ -40,13 +41,16 @@ function loadVocabulary() {
 
 function parseCSV(data) {
     const lines = data.split('\n').filter(line => line.trim() !== '');
-    return lines.slice(1).map(line => {
+    const parsedData = lines.slice(1).map(line => {
         const [english, korean] = line.split(',').map(item => item.trim());
         if (english && korean) {
             return { english, korean };
         }
         return null;
     }).filter(item => item !== null);
+
+    console.log('Parsed CSV:', parsedData); // Debugging log
+    return parsedData;
 }
 
 function displayNextWord() {
@@ -54,6 +58,7 @@ function displayNextWord() {
         currentWord = words[Math.floor(Math.random() * words.length)].english;
         const wordCard = document.getElementById('word-card');
         wordCard.textContent = currentWord;
+        console.log('Displaying Word:', currentWord); // Debugging log
     } else {
         console.error('No words available to display.');
     }
@@ -70,6 +75,7 @@ function readWordAloud() {
             console.error('SpeechSynthesisUtterance.onerror', event);
         };
 
+        console.log('Reading Aloud:', currentWord); // Debugging log
         synth.speak(utterance);
     } else {
         console.error('No word to read aloud.');
@@ -92,7 +98,7 @@ function populateVoiceList() {
         }
     });
 
-    console.log('Available voices:', voices);
+    console.log('Available voices:', voices); // Debugging log
 
     // Set default voice if not selected
     if (!voiceSelect.value && voices.length > 0) {
