@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
         synth.onvoiceschanged = populateVoiceList;
     }
 
-    document.getElementById('read-word-btn').addEventListener('click', readWordAloud);
     document.getElementById('next-question-btn').addEventListener('click', displayNextWord);
     document.getElementById('rate').addEventListener('input', function () {
         document.getElementById('rate-value').textContent = this.value;
@@ -66,17 +65,12 @@ function displayNextWord() {
     document.getElementById('question-number').textContent = `Question ${questionNumber}`;
     questionNumber++; // Increment question number
     console.log('Displaying Word:', currentWord); // Debugging log
-    readWordAloud(); // Automatically start reading the word
-}
-
-function readWordAloud() {
-    if (!synth.speaking) {
-        speakWordNTimes(currentWord.english, 3);
-    }
+    speakWordNTimes(currentWord.english, 3); // Automatically start reading the word
 }
 
 function speakWordNTimes(word, times) {
     let count = 0;
+    document.getElementById('voice-input-box').textContent = '발음을 들어보세요'; // Prompt user to listen
     function speak() {
         if (count < times) {
             const utterance = new SpeechSynthesisUtterance(word);
@@ -113,18 +107,20 @@ function startSpeechRecognition() {
 
         document.getElementById('voice-input-box').textContent = '발음 해보세요'; // Prompt user to speak
 
-        recognition.onresult = function (event) {
+                recognition.onresult = function (event) {
             const finalTranscript = event.results[0][0].transcript.trim().toLowerCase();
             const voiceInputBox = document.getElementById('voice-input-box');
             voiceInputBox.textContent = finalTranscript;
 
             if (finalTranscript === currentWord.english.toLowerCase()) {
+                playAudio('correct-audio');
                 score += 2;
                 updateScore();
                 setTimeout(() => {
                     displayNextWord();
                 }, 2000);
             } else {
+                playAudio('incorrect-audio');
                 attempts++;
                 if (attempts >= maxAttempts) {
                     voiceInputBox.textContent = `No more attempts! Moving to next word.`;
@@ -183,10 +179,16 @@ function updateScore() {
     scoreFill.style.width = `${(score / maxScore) * 100}%`;
 }
 
+function playAudio(id) {
+    const audio = document.getElementById(id);
+    if (audio) {
+        audio.play();
+    }
+}
+
 function endGame() {
     const wordCard = document.getElementById('word-card');
     wordCard.innerHTML = '<h2>축하합니다! 학습을 완료했습니다.</h2>';
     document.getElementById('voice-input-box').style.display = 'none';
-    document.getElementById('read-word-btn').style.display = 'none';
     document.getElementById('next-question-btn').style.display = 'none';
 }
