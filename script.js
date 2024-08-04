@@ -247,4 +247,5 @@ document.getElementById('voice-input-btn').addEventListener('click', () => {
 });
 
 document.getElementById('rate').addEventListener('input', function () {
-    document.get
+    document.getElementById('rate-value').textContent = this.value;
+});
