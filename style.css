@@ -47,6 +47,17 @@ h1 {
   background-color: #45a049;
 }
 
+.voice-input-box {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px 0;
+  min-height: 50px;
+  text-align: center;
+  font-size: 18px;
+}
+
 .voice-settings {
   margin-top: 20px;
 }
@@ -58,4 +69,29 @@ h1 {
 .voice-settings select,
 .voice-settings input {
   margin-bottom: 10px;
+}
+
+.score-container {
+  margin: 20px 0;
+}
+
+.score-bar {
+  background-color: #e0e0e0;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.score-fill {
+  background-color: #4caf50;
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease-in-out;
+}
+
+.score-display {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
