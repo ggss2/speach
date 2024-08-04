@@ -107,12 +107,12 @@ function startSpeechRecognition() {
 
         document.getElementById('voice-input-box').textContent = '발음 해보세요'; // Prompt user to speak
 
-                recognition.onresult = function (event) {
+        recognition.onresult = function (event) {
             const finalTranscript = event.results[0][0].transcript.trim().toLowerCase();
             const voiceInputBox = document.getElementById('voice-input-box');
             voiceInputBox.textContent = finalTranscript;
 
-            if (finalTranscript === currentWord.english.toLowerCase()) {
+                        if (finalTranscript === currentWord.english.toLowerCase()) {
                 playAudio('correct-audio');
                 score += 2;
                 updateScore();
@@ -128,7 +128,8 @@ function startSpeechRecognition() {
                         displayNextWord();
                     }, 2000);
                 } else {
-                    voiceInputBox.textContent = `Incorrect. Try again! (${attempts} of ${maxAttempts} attempts)`;
+                    voiceInputBox.textContent = `Incorrect. Listen again! (${attempts} of ${maxAttempts} attempts)`;
+                    speakWordOnce(currentWord.english); // Re-read the word aloud once more
                 }
             }
         };
@@ -146,6 +147,25 @@ function startSpeechRecognition() {
         console.error('Speech recognition is not supported in this browser.');
         alert('Your browser does not support speech recognition.');
     }
+}
+
+function speakWordOnce(word) {
+    const utterance = new SpeechSynthesisUtterance(word);
+    const selectedVoice = document.getElementById('voice-select').selectedOptions[0]?.getAttribute('data-name');
+    utterance.voice = voices.find(voice => voice.name === selectedVoice) || voices[0];
+    utterance.rate = parseFloat(document.getElementById('rate').value);
+
+    document.getElementById('voice-input-box').textContent = '발음을 들어보세요'; // Prompt user to listen again
+
+    utterance.onerror = function (event) {
+        console.error('SpeechSynthesisUtterance.onerror', event);
+    };
+
+    utterance.onend = function () {
+        setTimeout(startSpeechRecognition, 1000); // Restart speech recognition after word is spoken
+    };
+
+    synth.speak(utterance);
 }
 
 function populateVoiceList() {
@@ -192,3 +212,4 @@ function endGame() {
     document.getElementById('voice-input-box').style.display = 'none';
     document.getElementById('next-question-btn').style.display = 'none';
 }
+
