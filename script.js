@@ -24,17 +24,32 @@ function loadVocabulary() {
     fetch('vocabulary.csv')
         .then(response => response.text())
         .then(data => {
-            words = data.split('\n').slice(1).map(line => {
-                const [korean, correct, wrong, wrongKorean] = line.split(',');
-                return { korean, correct, wrong, wrongKorean };
-            });
+            words = parseCSV(data);
             console.log('Loaded words:', words); // Debugging log
-            nextWord();
+            if (words.length > 0) {
+                nextWord();
+            } else {
+                alert('No words available. Please check the CSV file.');
+            }
         })
         .catch(error => {
             console.error('Error loading vocabulary:', error);
             alert('Failed to load vocabulary. Please try again later.');
         });
+}
+
+function parseCSV(data) {
+    // Split the CSV data by new lines and remove any empty lines
+    const lines = data.split('\n').filter(line => line.trim() !== '');
+
+    // Map each line to an object with the expected structure
+    return lines.slice(1).map(line => {
+        const [korean, correct, wrong, wrongKorean] = line.split(',').map(item => item.trim());
+        if (korean && correct && wrong && wrongKorean) {
+            return { korean, correct, wrong, wrongKorean };
+        }
+        return null;
+    }).filter(item => item !== null);
 }
 
 function nextWord() {
@@ -214,38 +229,4 @@ function startSpeechRecognition() {
 function populateVoiceList() {
     voices = synth.getVoices();
     const voiceSelect = document.getElementById('voice-select');
-    voiceSelect.innerHTML = ''; // Clear previous options
-
-    // Add US English voices
-    voices.forEach((voice) => {
-        if (voice.lang === 'en-US') {
-            const option = document.createElement('option');
-            option.textContent = `${voice.name} (${voice.lang})`;
-            option.setAttribute('data-lang', voice.lang);
-            option.setAttribute('data-name', voice.name);
-            voiceSelect.appendChild(option);
-        }
-    });
-
-    // Log available voices for debugging
-    console.log('Available voices:', voices);
-
-    // Set default voice if not selected
-    if (!voiceSelect.value && voices.length > 0) {
-        voiceSelect.selectedIndex = 0;
-    }
-}
-
-function endGame() {
-    const wordCard = document.getElementById('word-card');
-    wordCard.innerHTML = '<h2>축하합니다! 학습을 완료했습니다.</h2>';
-    document.getElementById('voice-input-box').style.display = 'none';
-    document.getElementById('voice-input-btn').style.display = 'none';
-}
-
-function playAudio(id) {
-    const audio = document.getElementById(id);
-    audio.play();
-}
-
-document.getElementById('voice-input-btn').add
+    voice
