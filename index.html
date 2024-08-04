@@ -9,10 +9,22 @@
 <body>
     <div class="container">
         <h1>English Pronunciation Practice</h1>
+        
+        <!-- Word and translation -->
         <div id="word-card" class="word-card">
+            <!-- Word and translation will be displayed here -->
             Loading word...
         </div>
+        
+        <!-- Button to trigger speech synthesis -->
         <button id="read-word-btn" class="read-word-btn">Read Word</button>
+        
+        <!-- Text area for displaying recognized speech -->
+        <div id="voice-input-box" class="voice-input-box">
+            <p>Speak the word when prompted</p>
+        </div>
+
+        <!-- Voice and rate settings -->
         <div class="voice-settings">
             <select id="voice-select">
                 <option value="">Choose Voice</option>
@@ -20,6 +32,14 @@
             <label for="rate">Rate:</label>
             <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
             <span id="rate-value">1</span>
+        </div>
+
+        <!-- Score display -->
+        <div class="score-container">
+            <div class="score-bar">
+                <div id="score-fill" class="score-fill"></div>
+            </div>
+            <div id="score-display" class="score-display">Score: 0</div>
         </div>
     </div>
     <script src="script.js"></script>
