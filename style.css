@@ -38,7 +38,7 @@ h1 {
   font-weight: bold;
 }
 
-.read-word-btn, .next-question-btn {
+.next-question-btn {
   background-color: #4caf50;
   color: white;
   border: none;
@@ -50,7 +50,7 @@ h1 {
   margin: 10px;
 }
 
-.read-word-btn:hover, .next-question-btn:hover {
+.next-question-btn:hover {
   background-color: #45a049;
 }
 
