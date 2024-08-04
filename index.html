@@ -17,9 +17,6 @@
         <div id="word-card" class="word-card">
             Loading word...
         </div>
-        
-        <!-- Button to trigger speech synthesis -->
-        <button id="read-word-btn" class="read-word-btn">Read Word</button>
 
         <!-- Button to skip to the next question -->
         <button id="next-question-btn" class="next-question-btn">Next Question</button>
@@ -46,6 +43,10 @@
             </div>
             <div id="score-display" class="score-display">Score: 0</div>
         </div>
+
+        <!-- Audio elements for correct and incorrect sounds -->
+        <audio id="correct-audio" src="correct-sound.mp3"></audio>
+        <audio id="incorrect-audio" src="incorrect-sound.mp3"></audio>
     </div>
     <script src="script.js"></script>
 </body>
