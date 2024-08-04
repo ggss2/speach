@@ -4,6 +4,7 @@ let currentWord = {};
 let words = [];
 let score = 0;
 let attempts = 0;
+let questionNumber = 1;
 const maxAttempts = 3;
 const maxScore = 100;
 
@@ -14,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
         synth.onvoiceschanged = populateVoiceList;
     }
 
-    document.getElementById('read-word-btn').addEventListener('click', startGame);
+    document.getElementById('read-word-btn').addEventListener('click', readWordAloud);
+    document.getElementById('next-question-btn').addEventListener('click', displayNextWord);
     document.getElementById('rate').addEventListener('input', function () {
         document.getElementById('rate-value').textContent = this.value;
     });
@@ -61,10 +63,13 @@ function displayNextWord() {
     currentWord = words[Math.floor(Math.random() * words.length)];
     const wordCard = document.getElementById('word-card');
     wordCard.innerHTML = `<p>${currentWord.english} - ${currentWord.korean}</p>`;
+    document.getElementById('question-number').textContent = `Question ${questionNumber}`;
+    questionNumber++; // Increment question number
     console.log('Displaying Word:', currentWord); // Debugging log
+    readWordAloud(); // Automatically start reading the word
 }
 
-function startGame() {
+function readWordAloud() {
     if (!synth.speaking) {
         speakWordNTimes(currentWord.english, 3);
     }
@@ -106,6 +111,8 @@ function startSpeechRecognition() {
         recognition.continuous = false;
         recognition.interimResults = false;
 
+        document.getElementById('voice-input-box').textContent = '발음 해보세요'; // Prompt user to speak
+
         recognition.onresult = function (event) {
             const finalTranscript = event.results[0][0].transcript.trim().toLowerCase();
             const voiceInputBox = document.getElementById('voice-input-box');
@@ -125,4 +132,61 @@ function startSpeechRecognition() {
                         displayNextWord();
                     }, 2000);
                 } else {
-                    voice
+                    voiceInputBox.textContent = `Incorrect. Try again! (${attempts} of ${maxAttempts} attempts)`;
+                }
+            }
+        };
+
+        recognition.onerror = function (event) {
+            console.error('Speech recognition error', event.error);
+        };
+
+        recognition.onend = function () {
+            console.log('Speech recognition ended.');
+        };
+
+        recognition.start();
+    } else {
+        console.error('Speech recognition is not supported in this browser.');
+        alert('Your browser does not support speech recognition.');
+    }
+}
+
+function populateVoiceList() {
+    voices = synth.getVoices();
+    const voiceSelect = document.getElementById('voice-select');
+    voiceSelect.innerHTML = ''; // Clear previous options
+
+    // Add English voices
+    voices.forEach((voice) => {
+        if (voice.lang.startsWith('en')) { // Include all English voices
+            const option = document.createElement('option');
+            option.textContent = `${voice.name} (${voice.lang})`;
+            option.setAttribute('data-lang', voice.lang);
+            option.setAttribute('data-name', voice.name);
+            voiceSelect.appendChild(option);
+        }
+    });
+
+    console.log('Available voices:', voices); // Debugging log
+
+    // Set default voice if not selected
+    if (!voiceSelect.value && voices.length > 0) {
+        voiceSelect.selectedIndex = 0;
+    }
+}
+
+function updateScore() {
+    const scoreDisplay = document.getElementById('score-display');
+    const scoreFill = document.getElementById('score-fill');
+    scoreDisplay.textContent = `Score: ${score}`;
+    scoreFill.style.width = `${(score / maxScore) * 100}%`;
+}
+
+function endGame() {
+    const wordCard = document.getElementById('word-card');
+    wordCard.innerHTML = '<h2>축하합니다! 학습을 완료했습니다.</h2>';
+    document.getElementById('voice-input-box').style.display = 'none';
+    document.getElementById('read-word-btn').style.display = 'none';
+    document.getElementById('next-question-btn').style.display = 'none';
+}
