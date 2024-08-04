@@ -28,6 +28,7 @@ function loadVocabulary() {
                 const [korean, correct, wrong, wrongKorean] = line.split(',');
                 return { korean, correct, wrong, wrongKorean };
             });
+            console.log('Loaded words:', words); // Debugging log
             nextWord();
         })
         .catch(error => {
@@ -55,7 +56,8 @@ function nextWord() {
     document.getElementById('result').textContent = '';
     document.getElementById('voice-input-box').innerHTML = '<p>정답을 말해보세요</p>';
     document.getElementById('question-number').textContent = `Question ${questionNumber}`;
-    startSpeechRecognition();
+    
+    speakWordNTimes(currentWord.correct, 3); // Ensure the word is spoken at the start
 }
 
 function shuffleArray(array) {
@@ -89,8 +91,11 @@ function checkAnswer(button) {
         // Stop recognition while speaking to avoid picking up own voice
         recognition.stop();
 
-        // Call the function with controlled speaking
-        speakWordNTimes(currentWord.correct, 3); // Read the correct answer 3 times
+        // Move to next word after a short delay
+        setTimeout(() => {
+            questionNumber++;
+            nextWord();
+        }, 2000); // 2-second delay
     } else {
         resultElement.textContent = '틀렸습니다. 다시 시도하세요.';
         resultElement.style.color = 'red';
@@ -143,8 +148,6 @@ function speakWordNTimes(word, times) {
                     // Ensure we move to the next question after all repetitions are done
                     setTimeout(() => {
                         speaking = false; // Reset the speaking flag
-                        questionNumber++;
-                        nextWord();
                         startSpeechRecognition(); // Restart recognition after speech
                     }, 1000); // Small delay to transition smoothly
                 }
@@ -245,11 +248,4 @@ function playAudio(id) {
     audio.play();
 }
 
-document.getElementById('voice-input-btn').addEventListener('click', () => {
-    if (!synth.speaking && !speaking) {
-        startSpeechRecognition();
-    }
-});
-
-document.getElementById('rate').addEventListener('input', function () {
-    document.getElementById('rate-value').textContent = this
+document.getElementById('voice-input-btn').add
