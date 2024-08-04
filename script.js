@@ -77,13 +77,6 @@ function nextWord() {
     }
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
 function checkAnswer(transcript) {
     const resultElement = document.getElementById('result');
 
@@ -130,7 +123,8 @@ function speakWordNTimes(word, times) {
         if (count < times) {
             const utterance = new SpeechSynthesisUtterance(word);
             const selectedVoice = document.getElementById('voice-select').selectedOptions[0]?.getAttribute('data-name');
-            // Choose the selected voice or default to the first voice
+            
+            // Choose the selected voice or default to the first available voice
             utterance.voice = voices.find(voice => voice.name === selectedVoice) || voices[0];
             utterance.rate = parseFloat(document.getElementById('rate').value);
 
@@ -210,7 +204,7 @@ function populateVoiceList() {
 
     // Add US English voices
     voices.forEach((voice) => {
-        if (voice.lang === 'en-US') {
+        if (voice.lang.startsWith('en')) { // Include all English voices
             const option = document.createElement('option');
             option.textContent = `${voice.name} (${voice.lang})`;
             option.setAttribute('data-lang', voice.lang);
@@ -249,3 +243,4 @@ document.getElementById('voice-input-btn').addEventListener('click', () => {
 document.getElementById('rate').addEventListener('input', function () {
     document.getElementById('rate-value').textContent = this.value;
 });
+
