@@ -61,16 +61,20 @@ function nextWord() {
     currentWord = words[Math.floor(Math.random() * words.length)];
     const wordCard = document.getElementById('word-card');
 
-    wordCard.innerHTML = `
-        <p class="english-word">${currentWord.english}</p>
-        <p class="korean-word">${currentWord.korean}</p>
-    `;
-    document.getElementById('result').textContent = '';
-    document.getElementById('voice-input-box').innerHTML = '<p>정답을 말해보세요</p>';
-    document.getElementById('question-number').textContent = `Question ${questionNumber}`;
+    if (currentWord) {
+        wordCard.innerHTML = `
+            <p class="english-word">${currentWord.english}</p>
+            <p class="korean-word">${currentWord.korean}</p>
+        `;
+        document.getElementById('result').textContent = '';
+        document.getElementById('voice-input-box').innerHTML = '<p>정답을 말해보세요</p>';
+        document.getElementById('question-number').textContent = `Question ${questionNumber}`;
 
-    // Speak the word 3 times
-    speakWordNTimes(currentWord.english, 3);
+        // Speak the word 3 times
+        speakWordNTimes(currentWord.english, 3);
+    } else {
+        console.error('Failed to retrieve the next word.');
+    }
 }
 
 function shuffleArray(array) {
@@ -115,7 +119,7 @@ function updateScore() {
     const scoreDisplay = document.getElementById('score-display');
     const scoreFill = document.getElementById('score-fill');
     scoreDisplay.textContent = `Score: ${score}`;
-    scoreFill.style.width = `${score}%`;
+    scoreFill.style.width = `${(score / 100) * 100}%`;
 }
 
 function speakWordNTimes(word, times) {
@@ -243,5 +247,4 @@ document.getElementById('voice-input-btn').addEventListener('click', () => {
 });
 
 document.getElementById('rate').addEventListener('input', function () {
-    document.getElementById('rate-value').textContent = this.value;
-});
+    document.get
