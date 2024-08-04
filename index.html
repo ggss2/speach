@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Pronunciation Practice</title>
+    <title>영어 말하기 연습</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>English Pronunciation Practice</h1>
+        <h1>영어 말하기 연습</h1>
+
+        <!-- Display question number -->
+        <div id="question-number" class="question-number">Question 1</div>
         
         <!-- Word and translation -->
         <div id="word-card" class="word-card">
-            <!-- Word and translation will be displayed here -->
             Loading word...
         </div>
         
         <!-- Button to trigger speech synthesis -->
         <button id="read-word-btn" class="read-word-btn">Read Word</button>
+
+        <!-- Button to skip to the next question -->
+        <button id="next-question-btn" class="next-question-btn">Next Question</button>
         
         <!-- Text area for displaying recognized speech -->
         <div id="voice-input-box" class="voice-input-box">
